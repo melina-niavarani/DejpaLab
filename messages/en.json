@@ -1,0 +1,232 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "requestTest": "Request Test",
+    "results": "Results",
+    "about": "About Us",
+    "contact": "Contact",
+    "searchPlaceholder": "Search..."
+  },
+  "home": {
+    "title": "Dejpa Laboratory",
+    "subtitle": "Reliable and Professional Laboratory Services",
+    "description": "Dejpa Laboratory provides high-quality laboratory services in the industry with advanced equipment and expert team.",
+    "cta": "View Services",
+    "learnMore": "Learn More",
+    "requestSection": {
+      "title": "Request Test & View Results",
+      "subtitle": "Submit your test request online and track results easily",
+      "requestButton": "Request Test",
+      "resultsButton": "View Results"
+    }
+  },
+  "services": {
+    "title": "Laboratory Services",
+    "subtitle": "Our Specialized Services",
+    "service1": {
+      "title": "Chemical Testing",
+      "description": "Accurate and reliable chemical testing for various industries"
+    },
+    "service2": {
+      "title": "Physical Testing",
+      "description": "Evaluation of physical properties of materials and products"
+    },
+    "service3": {
+      "title": "Microbiology Testing",
+      "description": "Microbial analysis and testing of products and materials"
+    },
+    "service4": {
+      "title": "Environmental Testing",
+      "description": "Assessment and monitoring of environmental factors"
+    },
+    "service5": {
+      "title": "Expert Consultation",
+      "description": "Professional consultation in laboratory services"
+    },
+    "service6": {
+      "title": "Certification & Standards",
+      "description": "Issuance of valid international certifications"
+    },
+    "features": {
+      "service1": ["Accurate Testing", "Comprehensive Reports", "International Standards"],
+      "service2": ["Property Evaluation", "Resistance Testing", "Structural Analysis"],
+      "service3": ["Microbial Testing", "Sterility Tests", "Pathogen Analysis"],
+      "service4": ["Environmental Monitoring", "Contamination Testing", "Safety Assessment"],
+      "service5": ["Expert Consultation", "Standards Guidance", "Technical Support"],
+      "service6": ["ISO Certification", "Valid Certificates", "International Approvals"]
+    },
+    "cta": {
+      "title": "Ready to Serve",
+      "description": "Contact us for more information and free consultation",
+      "button": "Contact Us"
+    },
+    "bitumen": {
+      "title": "Bitumen Laboratory Services",
+      "description": "Bitumen has various types based on usage location and manufacturing method. Their heat resistance, viscosity, and insulation properties under different conditions are determined according to the latest standards of the International Organization for Standardization (ISO) based on standards 12505-1 to 12505-10. At Dejpa Laboratory, we are ready to evaluate your bitumen samples using the most advanced equipment according to their type.",
+      "testing": {
+        "title": "Bitumen Testing",
+        "description": "Evaluation of bitumen samples using the most advanced equipment and based on ISO standards",
+        "features": [
+          "Heat resistance testing",
+          "Viscosity measurement",
+          "Insulation property evaluation",
+          "Testing based on ISO standards 12505-1 to 12505-10",
+          "Accurate and comprehensive reporting"
+        ]
+      },
+      "training": {
+        "title": "Training Courses",
+        "description": "At Dejpa, we consider education and knowledge development in this field as our mission. We believe that by increasing the knowledge level of professionals in this field, we have created special courses for training students and those interested in this field.",
+        "courses": [
+          "Training on penetration grade bitumen classification",
+          "Training on performance grade bitumen classification",
+          "Training on viscosity grade bitumen classification",
+          "Training on cutback bitumen",
+          "Training on emulsified bitumen",
+          "Training on modified bitumen"
+        ]
+      },
+      "cta": "We are ready to evaluate your bitumen samples",
+      "ctaButton": "Request Bitumen Test"
+    }
+  },
+  "about": {
+    "title": "About Dejpa Laboratory",
+    "subtitle": "Trust and Quality in Every Test",
+    "description": "With years of experience in providing laboratory services, Dejpa Laboratory is one of the most reputable laboratories in the country. We provide quality services to domestic and international clients using advanced equipment and expert team.",
+    "mission": "Our Mission",
+    "missionText": "Providing laboratory services with the highest standards of quality and accuracy",
+    "vision": "Our Vision",
+    "visionText": "Becoming one of the leading laboratories in the region",
+    "values": "Our Values",
+    "value1": "Accuracy & Quality",
+    "value2": "Trust & Transparency",
+    "value3": "Innovation & Progress",
+    "valueDescriptions": {
+      "value1": "Commitment to the highest quality standards in all tests",
+      "value2": "Complete transparency in reporting and customer relations",
+      "value3": "Using the latest technologies and laboratory methods"
+    },
+    "stats": {
+      "years": "Years of Experience",
+      "clients": "Satisfied Clients",
+      "tests": "Tests Completed",
+      "testTypes": "Test Types"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We are ready to answer your questions",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send Message",
+    "address": "Address",
+    "addressText": "Tehran, Iran",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "contactInfo": "Contact Information",
+    "workingHours": "Working Hours",
+    "workingHoursText": {
+      "weekdays": "Saturday to Wednesday: 8:00 AM - 5:00 PM",
+      "thursday": "Thursday: 8:00 AM - 1:00 PM",
+      "friday": "Friday: Closed"
+    }
+  },
+  "footer": {
+    "description": "Dejpa Laboratory - Providing Reliable Laboratory Services",
+    "quickLinks": "Quick Links",
+    "contactInfo": "Contact Information",
+    "rights": "All rights reserved"
+  },
+  "requestTest": {
+    "title": "Request a Test",
+    "subtitle": "Submit your test request online and receive results quickly",
+    "personalInfo": "Personal Information",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "preferredDate": "Preferred Date",
+    "testInfo": "Test Information",
+    "testType": "Test Type",
+    "selectTestType": "Select Test Type",
+    "description": "Description",
+    "descriptionPlaceholder": "Please describe your test requirements in detail...",
+    "attachFiles": "Attach Files (Optional)",
+    "fileNote": "You can attach relevant documents, images, or specifications (Max 10MB)",
+    "submit": "Submit Request",
+    "success": {
+      "title": "Request Submitted Successfully!",
+      "message": "Your test request has been received. We will contact you within 24 hours.",
+      "note": "You will receive a tracking code via email to check your results."
+    },
+    "testTypes": {
+      "chemical": "Chemical Testing",
+      "physical": "Physical Testing",
+      "microbiology": "Microbiology Testing",
+      "environmental": "Environmental Testing",
+      "custom": "Custom Test"
+    },
+    "infoCard1": {
+      "title": "Fast Processing",
+      "description": "We process requests within 24 hours"
+    },
+    "infoCard2": {
+      "title": "Online Tracking",
+      "description": "Track your test status online"
+    },
+    "infoCard3": {
+      "title": "Secure Results",
+      "description": "Download your results securely"
+    }
+  },
+  "results": {
+    "title": "View Test Results",
+    "subtitle": "Enter your tracking code, login with SMS, or use password to view your test results",
+    "methods": {
+      "tracking": "Tracking Code",
+      "sms": "SMS Login",
+      "password": "Password Login"
+    },
+    "trackingCode": "Tracking Code",
+    "trackingCodePlaceholder": "Enter your tracking code",
+    "trackingCodeNote": "You received this code via email after submitting your test request",
+    "sms": {
+      "phoneNumber": "Phone Number",
+      "phonePlaceholder": "09123456789",
+      "sendCode": "Send Code",
+      "codeSent": "Verification code has been sent to your phone",
+      "verificationCode": "Verification Code",
+      "codePlaceholder": "000000",
+      "codeNote": "Enter the 6-digit code sent to your phone via SMS"
+    },
+    "password": {
+      "emailOrPhone": "Email or Phone Number",
+      "emailOrPhonePlaceholder": "Enter your email or phone number",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "note": "Use the password you set when requesting the test"
+    },
+    "search": "Search",
+    "searching": "Searching...",
+    "noResults": "Enter your information above to view your test results",
+    "notFound": "No results found",
+    "notFoundNote": "Please check your information and try again",
+    "download": "Download",
+    "status": {
+      "completed": "Completed",
+      "processing": "Processing",
+      "pending": "Pending"
+    },
+    "exampleTest1": "Chemical Analysis - Sample #001",
+    "exampleTest2": "Physical Properties Test - Sample #002",
+    "info": {
+      "title": "How to View Results",
+      "item1": "Choose your preferred login method: Tracking Code, SMS, or Password",
+      "item2": "View all your test results and their status",
+      "item3": "Download completed test reports in PDF format"
+    }
+  }
+}
