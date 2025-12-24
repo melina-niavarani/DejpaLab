@@ -54,6 +54,29 @@ export default function Navigation() {
     }
   }, [isSearchOpen]);
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isOpen && !target.closest('.mobile-menu-container') && !target.closest('button[aria-label="Menu"]')) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
     <>
       <style dangerouslySetInnerHTML={{__html: `
@@ -61,23 +84,13 @@ export default function Navigation() {
           .header-nav .logo-wrapper {
             width: 200px !important;
             max-width: 200px !important;
-            overflow: hidden !important;
-          }
-          .header-nav .logo-white-bg {
-            width: 200px !important;
-            max-width: 200px !important;
           }
           .header-nav .logo-container {
             max-width: 200px !important;
-            overflow: hidden !important;
           }
         }
         @media (min-width: 1536px) {
           .header-nav .logo-wrapper {
-            width: 220px !important;
-            max-width: 220px !important;
-          }
-          .header-nav .logo-white-bg {
             width: 220px !important;
             max-width: 220px !important;
           }
@@ -90,20 +103,12 @@ export default function Navigation() {
             width: 240px !important;
             max-width: 240px !important;
           }
-          .header-nav .logo-white-bg {
-            width: 240px !important;
-            max-width: 240px !important;
-          }
         }
         @media (min-width: 1920px) {
           .header-nav .container {
             max-width: 1920px;
           }
           .header-nav .logo-wrapper {
-            width: 260px !important;
-            max-width: 260px !important;
-          }
-          .header-nav .logo-white-bg {
             width: 260px !important;
             max-width: 260px !important;
           }
@@ -114,32 +119,33 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16 relative">
           {/* Left Section: Logo Box */}
           <div className="flex items-center justify-start relative">
-            {/* Wrapper for logo background with overflow control */}
+            {/* Subtle shadow/glow effect for logo visibility */}
             <div 
-              className="hidden xl:block absolute top-0 h-16 overflow-hidden logo-wrapper" 
+              className="hidden xl:block absolute top-0 h-16 logo-wrapper pointer-events-none" 
               style={{ 
                 width: '200px', 
                 maxWidth: '200px',
-                [isRTL ? 'right' : 'left']: '-16px',
+                [isRTL ? 'right' : 'left']: '0',
                 zIndex: 0,
               }}
             >
-              {/* White Background for Logo Section - Extends fully on non-rounded side */}
+              {/* Subtle glow background for logo */}
               <div 
-                className="absolute top-0 h-16 bg-white/95 backdrop-blur-sm logo-white-bg"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full logo-glow"
                 style={{
-                  borderRadius: isRTL ? '999px 0 0 0' : '0 999px 0 0',
-                  [isRTL ? 'right' : 'left']: '-4px',
-                  width: '200px',
-                  maxWidth: '200px',
+                  background: 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%)',
+                  filter: 'blur(8px)',
+                  width: '180px',
+                  height: '60px',
                 }}
               ></div>
             </div>
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="xl:hidden p-2.5 rounded-xl text-white hover:bg-white/20 active:scale-95 transition-all duration-200 mr-4 rtl:mr-0 rtl:ml-4"
+              className="xl:hidden p-2.5 rounded-xl text-white hover:bg-white/20 active:scale-95 transition-all duration-200 mr-4 rtl:mr-0 rtl:ml-4 z-50 relative"
               aria-label="Menu"
+              aria-expanded={isOpen}
             >
               <div className="w-6 h-5 flex flex-col justify-between">
                 <span className={`block h-0.5 w-full bg-white transition-all duration-300 ease-out ${isOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
@@ -149,15 +155,37 @@ export default function Navigation() {
             </button>
 
             {/* Desktop Logo */}
-            <Link href="/" className="hidden xl:flex items-center relative z-10 h-16 px-8 group overflow-hidden logo-container" style={{ maxWidth: '200px', position: 'relative' }}>
-              <Image
-                src="/img/logo.png"
-                alt="DejpaLab Logo"
-                width={160}
-                height={53}
-                className="h-12 w-auto object-contain relative z-10 transition-transform duration-300 group-hover:scale-105"
-                priority
-              />
+            <Link href="/" className="hidden xl:flex items-center relative z-10 h-16 px-8 group logo-container" style={{ maxWidth: '200px', position: 'relative' }}>
+              <div className="relative">
+                {/* Subtle drop shadow for logo visibility */}
+                <div 
+                  className="absolute inset-0"
+                  style={{
+                    filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.2))',
+                    zIndex: -1,
+                  }}
+                >
+                  <Image
+                    src="/img/logo.png"
+                    alt="DejpaLab Logo Shadow"
+                    width={160}
+                    height={53}
+                    className="h-12 w-auto object-contain opacity-0"
+                    aria-hidden="true"
+                  />
+                </div>
+                <Image
+                  src="/img/logo.png"
+                  alt="DejpaLab Logo"
+                  width={160}
+                  height={53}
+                  className="h-12 w-auto object-contain relative z-10 transition-transform duration-300 group-hover:scale-105"
+                  style={{
+                    filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))',
+                  }}
+                  priority
+                />
+              </div>
             </Link>
 
             {/* Mobile Search Button */}
@@ -198,23 +226,21 @@ export default function Navigation() {
 
           {/* Right Section: Tools */}
           <div className="flex items-center justify-end space-x-3 rtl:space-x-reverse relative">
-            {/* Mobile Logo with White Background */}
-            <div className="xl:hidden relative h-16" style={{ width: '120px' }}>
-              <div 
-                className="bg-white/95 backdrop-blur-sm absolute top-0 h-full w-full"
-                style={{
-                  borderRadius: isRTL ? '999px 0 0 0' : '0 999px 0 0',
-                  [isRTL ? 'right' : 'left']: '0',
-                }}
-              ></div>
-              <Link href="/" className="relative z-10 flex items-center justify-center h-full px-4 group">
-                <Image
-                  src="/img/logo.png"
-                  alt="DejpaLab Logo"
-                  width={120}
-                  height={40}
-                  className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                />
+            {/* Mobile Logo */}
+            <div className="xl:hidden relative h-16 flex items-center justify-center px-4" style={{ width: '120px' }}>
+              <Link href="/" className="relative z-10 flex items-center justify-center h-full group">
+                <div className="relative">
+                  <Image
+                    src="/img/logo.png"
+                    alt="DejpaLab Logo"
+                    width={120}
+                    height={40}
+                    className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    style={{
+                      filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))',
+                    }}
+                  />
+                </div>
               </Link>
             </div>
 
@@ -274,11 +300,14 @@ export default function Navigation() {
 
         {/* Mobile Menu Dropdown */}
         <div
-          className={`xl:hidden overflow-hidden transition-all duration-300 ease-out ${
-            isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          className={`xl:hidden mobile-menu-container overflow-hidden transition-all duration-300 ease-out ${
+            isOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
           }`}
+          style={{
+            zIndex: 40,
+          }}
         >
-          <div className="pb-4 bg-primary-600/95 backdrop-blur-xl border-t border-white/20">
+          <div className="pb-4 bg-primary-600/95 backdrop-blur-xl border-t border-white/20 overflow-y-auto max-h-[calc(100vh-4rem)]">
             {navItems.map((item, index) => (
               <Link
                 key={item.href}

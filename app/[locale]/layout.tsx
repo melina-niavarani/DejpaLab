@@ -33,7 +33,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <Navigation />
-            <main className="min-h-screen pt-16">{children}</main>
+            <main className="min-h-screen pt-16 page-transition">{children}</main>
             <Footer />
           </AuthProvider>
         </NextIntlClientProvider>
