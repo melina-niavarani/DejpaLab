@@ -214,7 +214,7 @@ export default function HomePage() {
               </p>
               <div className="flex items-center text-white font-semibold group-hover:translate-x-2 rtl:group-hover:-translate-x-2 transition-transform duration-300">
                 <span>{t('requestSection.requestButton')}</span>
-                <ArrowRight className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2" />
+                <ArrowRight className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2 rtl:rotate-180" />
               </div>
             </Link>
 
@@ -232,7 +232,7 @@ export default function HomePage() {
               </p>
               <div className="flex items-center text-white font-semibold group-hover:translate-x-2 rtl:group-hover:-translate-x-2 transition-transform duration-300">
                 <span>{t('requestSection.resultsButton')}</span>
-                <ArrowRight className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2" />
+                <ArrowRight className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2 rtl:rotate-180" />
               </div>
             </Link>
           </div>

@@ -1,14 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { Search, FileText, Download, Calendar, CheckCircle, Clock, XCircle, MessageSquare, Lock, Key } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Search, FileText, Download, Calendar, CheckCircle, Clock, XCircle, MessageSquare, Lock, Key, Building2, Mail, Phone, LogOut, LogIn } from 'lucide-react';
 
 type LoginMethod = 'tracking' | 'sms' | 'password';
 
+interface CustomerSession {
+  username: string;
+  companyName: string;
+  email: string;
+  phone: string;
+}
+
 export default function ResultsPage() {
   const t = useTranslations('results');
+  const { testRequests, verifyCustomer } = useAuth();
   const [loginMethod, setLoginMethod] = useState<LoginMethod>('tracking');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [customerSession, setCustomerSession] = useState<CustomerSession | null>(null);
   
   // Tracking code method
   const [trackingCode, setTrackingCode] = useState('');
@@ -20,51 +31,85 @@ export default function ResultsPage() {
   const [smsCountdown, setSmsCountdown] = useState(0);
   
   // Password method
-  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   
-  const [results, setResults] = useState<Array<{
-    id: string;
-    testName: string;
-    date: string;
-    status: 'completed' | 'pending' | 'processing';
-    downloadUrl?: string;
-  }> | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [loginError, setLoginError] = useState('');
 
-  // Mock data - in real app, this would come from API
-  const mockResults: Record<string, Array<{
-    id: string;
-    testName: string;
-    date: string;
-    status: 'completed' | 'pending' | 'processing';
-    downloadUrl?: string;
-  }>> = {
-    '12345': [
-      {
-        id: '1',
-        testName: t('exampleTest1'),
-        date: '2024-01-15',
-        status: 'completed',
-        downloadUrl: '#',
-      },
-      {
-        id: '2',
-        testName: t('exampleTest2'),
-        date: '2024-01-20',
-        status: 'completed',
-        downloadUrl: '#',
-      },
-    ],
+  // Find customer requests based on login method
+  const findCustomerRequests = (identifier: string, method: LoginMethod, password?: string): CustomerSession | null => {
+    // Find request by tracking code
+    if (method === 'tracking') {
+      const request = testRequests.find(req => 
+        req.trackingCode === identifier || 
+        req.id === identifier || 
+        req.id.slice(-6) === identifier
+      );
+      if (request) {
+        return {
+          username: request.username,
+          companyName: request.companyName,
+          email: request.email,
+          phone: request.phone,
+        };
+      }
+    }
+    
+    // Find by phone number (SMS method)
+    if (method === 'sms') {
+      const request = testRequests.find(req => req.phone === identifier);
+      if (request) {
+        return {
+          username: request.username,
+          companyName: request.companyName,
+          email: request.email,
+          phone: request.phone,
+        };
+      }
+    }
+    
+    // Find by username and password (Password method)
+    if (method === 'password' && password) {
+      const verifiedUser = verifyCustomer(identifier, password);
+      if (verifiedUser) {
+        return {
+          username: verifiedUser.username,
+          companyName: verifiedUser.companyName,
+          email: verifiedUser.email,
+          phone: verifiedUser.phone,
+        };
+      }
+    }
+    
+    return null;
   };
 
   const handleSendSmsCode = (e: React.FormEvent) => {
     e.preventDefault();
     if (!phoneNumber) return;
     
-    // Simulate sending SMS code
+    // Check if phone number exists in system
+    const phoneExists = testRequests.some(req => req.phone === phoneNumber);
+    
+    if (!phoneExists) {
+      setLoginError(t('sms.phoneNotFound'));
+      return;
+    }
+    
+    // Generate 6-digit verification code
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Simulate sending SMS code (in production, this would call SMS API)
+    console.log(`SMS sent to ${phoneNumber}: Your verification code is ${verificationCode}`);
+    
+    // Store code in sessionStorage temporarily (in production, verify on backend)
+    sessionStorage.setItem(`sms_code_${phoneNumber}`, verificationCode);
+    sessionStorage.setItem(`sms_code_time_${phoneNumber}`, Date.now().toString());
+    
     setSmsCodeSent(true);
     setSmsCountdown(120); // 2 minutes countdown
+    setLoginError('');
     
     const interval = setInterval(() => {
       setSmsCountdown((prev) => {
@@ -77,32 +122,87 @@ export default function ResultsPage() {
     }, 1000);
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSearching(true);
     
     // Simulate API call
     setTimeout(() => {
-      let foundResults = null;
+      let customer: CustomerSession | null = null;
       
       if (loginMethod === 'tracking') {
-        foundResults = mockResults[trackingCode] || null;
+        customer = findCustomerRequests(trackingCode, 'tracking');
       } else if (loginMethod === 'sms') {
-        // Mock: if phone is 09123456789 and code is 1234, show results
-        if (phoneNumber === '09123456789' && smsCode === '1234') {
-          foundResults = mockResults['12345'] || null;
+        // Verify SMS code
+        const storedCode = sessionStorage.getItem(`sms_code_${phoneNumber}`);
+        const codeTime = sessionStorage.getItem(`sms_code_time_${phoneNumber}`);
+        
+        // Check if code exists and is not expired (5 minutes)
+        if (codeTime && Date.now() - parseInt(codeTime) > 5 * 60 * 1000) {
+          setLoginError(t('sms.codeExpired'));
+          setIsSearching(false);
+          return;
+        }
+        
+        if (storedCode && smsCode === storedCode) {
+          customer = findCustomerRequests(phoneNumber, 'sms');
+          // Clear SMS code after successful login
+          sessionStorage.removeItem(`sms_code_${phoneNumber}`);
+          sessionStorage.removeItem(`sms_code_time_${phoneNumber}`);
+        } else {
+          setLoginError(t('sms.invalidCode'));
         }
       } else if (loginMethod === 'password') {
-        // Mock: if email is test@test.com and password is 1234, show results
-        if (emailOrPhone === 'test@test.com' && password === '1234') {
-          foundResults = mockResults['12345'] || null;
-        }
+        // Verify password using AuthContext
+        customer = findCustomerRequests(username, 'password', password);
       }
       
-      setResults(foundResults);
+      if (customer) {
+        setCustomerSession(customer);
+        setIsLoggedIn(true);
+        setLoginError('');
+        // Save to sessionStorage
+        sessionStorage.setItem('customer_session', JSON.stringify(customer));
+      } else {
+        setLoginError(t('loginError'));
+      }
+      
       setIsSearching(false);
     }, 1000);
   };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCustomerSession(null);
+    sessionStorage.removeItem('customer_session');
+    setTrackingCode('');
+    setPhoneNumber('');
+    setSmsCode('');
+    setUsername('');
+    setPassword('');
+    setSmsCodeSent(false);
+  };
+
+  // Load session on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedSession = sessionStorage.getItem('customer_session');
+      if (savedSession) {
+        try {
+          const session = JSON.parse(savedSession);
+          setCustomerSession(session);
+          setIsLoggedIn(true);
+        } catch (e) {
+          // Invalid session
+        }
+      }
+    }
+  }, []);
+
+  // Get customer requests
+  const customerRequests = customerSession 
+    ? testRequests.filter(req => req.username === customerSession.username)
+    : [];
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -143,6 +243,192 @@ export default function ResultsPage() {
     }
   };
 
+  const handleDownload = (resultFile: string, fileName: string) => {
+    if (resultFile.startsWith('data:')) {
+      const link = document.createElement('a');
+      link.href = resultFile;
+      link.download = fileName;
+      link.click();
+    } else {
+      const link = document.createElement('a');
+      link.href = resultFile;
+      link.download = fileName;
+      link.target = '_blank';
+      link.click();
+    }
+  };
+
+  // If logged in, show dashboard
+  if (isLoggedIn && customerSession) {
+    return (
+      <div className="py-24 bg-gradient-to-b from-gray-50 to-white min-h-screen">
+        <div className="container mx-auto px-4">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+                  {t('customerDashboard')}
+                </h1>
+                <p className="text-gray-600">{t('welcomeCustomer', { name: customerSession.companyName })}</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all flex items-center gap-2"
+              >
+                <LogOut className="w-5 h-5" />
+                {t('logout')}
+              </button>
+            </div>
+
+            {/* Customer Info Card */}
+            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="flex items-center gap-4">
+                  <div className="bg-primary-100 p-3 rounded-xl">
+                    <Building2 className="w-6 h-6 text-primary-700" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">{t('companyName')}</p>
+                    <p className="font-semibold text-gray-900">{customerSession.companyName}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="bg-secondary-100 p-3 rounded-xl">
+                    <Mail className="w-6 h-6 text-secondary-700" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">{t('email')}</p>
+                    <p className="font-semibold text-gray-900">{customerSession.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="bg-primary-100 p-3 rounded-xl">
+                    <Phone className="w-6 h-6 text-primary-700" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">{t('phone')}</p>
+                    <p className="font-semibold text-gray-900">{customerSession.phone}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Requests Section */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('myRequests')}</h2>
+            
+            {customerRequests.length === 0 ? (
+              <div className="bg-white p-12 rounded-3xl shadow-xl border border-gray-100 text-center">
+                <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-600 text-lg">{t('noRequests')}</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {customerRequests.map((request) => (
+                  <div
+                    key={request.id}
+                    className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="bg-primary-100 p-2 rounded-lg">
+                            <FileText className="w-5 h-5 text-primary-700" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="text-lg font-bold text-gray-900">
+                                {t('request')} #{request.id.slice(-6)}
+                              </h3>
+                              {request.trackingCode && (
+                                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded font-mono">
+                                  {t('trackingCode')}: {request.trackingCode}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 mb-2">{request.description}</p>
+                            <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                              <span>{t('requestDate')}: {new Date(request.createdAt).toLocaleDateString('fa-IR')}</span>
+                              {request.updatedAt && (
+                                <span>{t('lastUpdate')}: {new Date(request.updatedAt).toLocaleDateString('fa-IR')}</span>
+                              )}
+                              {request.processingStartedAt && (
+                                <span>{t('processingStarted')}: {new Date(request.processingStartedAt).toLocaleDateString('fa-IR')}</span>
+                              )}
+                              {request.completedAt && (
+                                <span className="text-green-600">{t('completedAt')}: {new Date(request.completedAt).toLocaleDateString('fa-IR')}</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
+                            <span>{new Date(request.createdAt).toLocaleDateString('fa-IR')}</span>
+                          </div>
+                          <div className={`flex items-center gap-2 px-3 py-1 rounded-lg border ${getStatusColor(request.status)}`}>
+                            {getStatusIcon(request.status)}
+                            <span className="font-medium">{getStatusText(request.status)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {request.status === 'completed' && request.resultFile ? (
+                          <>
+                            <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-2">
+                              <p className="text-sm text-green-700 font-semibold flex items-center gap-2">
+                                <CheckCircle className="w-4 h-4" />
+                                {t('resultReady')}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => handleDownload(request.resultFile!, request.resultFileName || 'result.pdf')}
+                              className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 hover:scale-105 active:scale-95 flex items-center justify-center space-x-2 rtl:space-x-reverse"
+                            >
+                              <Download className="w-5 h-5" />
+                              <span>{t('downloadResultPDF')}</span>
+                            </button>
+                            {!request.resultFile.startsWith('data:') && (
+                              <a
+                                href={request.resultFile}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-center text-sm text-primary-600 hover:text-primary-700 font-medium"
+                              >
+                                {t('viewInNewTab')}
+                              </a>
+                            )}
+                          </>
+                        ) : request.status === 'processing' ? (
+                          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3">
+                            <p className="text-sm text-yellow-700 font-semibold flex items-center gap-2">
+                              <Clock className="w-4 h-4" />
+                              {t('status.processing')}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                            <p className="text-sm text-gray-600 font-semibold flex items-center gap-2">
+                              <Clock className="w-4 h-4" />
+                              {t('status.pending')}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Login form
   return (
     <div className="py-24 bg-gradient-to-b from-gray-50 to-white min-h-screen">
       <div className="container mx-auto px-4">
@@ -162,7 +448,6 @@ export default function ResultsPage() {
               <button
                 onClick={() => {
                   setLoginMethod('tracking');
-                  setResults(null);
                   setSmsCodeSent(false);
                 }}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-200 ${
@@ -177,7 +462,6 @@ export default function ResultsPage() {
               <button
                 onClick={() => {
                   setLoginMethod('sms');
-                  setResults(null);
                   setSmsCodeSent(false);
                 }}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-200 ${
@@ -192,7 +476,6 @@ export default function ResultsPage() {
               <button
                 onClick={() => {
                   setLoginMethod('password');
-                  setResults(null);
                   setSmsCodeSent(false);
                 }}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-200 ${
@@ -207,9 +490,9 @@ export default function ResultsPage() {
             </div>
           </div>
 
-          {/* Search Form */}
+          {/* Login Form */}
           <div className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100 mb-8">
-            <form onSubmit={handleSearch} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-6">
               {/* Tracking Code Method */}
               {loginMethod === 'tracking' && (
                 <div>
@@ -229,13 +512,15 @@ export default function ResultsPage() {
                     <button
                       type="submit"
                       disabled={isSearching}
-                      className="group bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3.5 rounded-xl font-bold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 rtl:space-x-reverse"
+                      className="group bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3.5 rounded-xl font-bold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Search className="w-5 h-5" />
-                      <span>{isSearching ? t('searching') : t('search')}</span>
+                      {isSearching ? t('loggingIn') : t('login')}
                     </button>
                   </div>
                   <p className="text-sm text-gray-500 mt-2">{t('trackingCodeNote')}</p>
+                  {loginError && loginMethod === 'tracking' && (
+                    <p className="text-sm text-red-500 mt-2">{loginError}</p>
+                  )}
                 </div>
               )}
 
@@ -288,13 +573,17 @@ export default function ResultsPage() {
                         <button
                           type="submit"
                           disabled={isSearching || !smsCode}
-                          className="group bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3.5 rounded-xl font-bold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 rtl:space-x-reverse"
+                          className="group bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3.5 rounded-xl font-bold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <Search className="w-5 h-5" />
-                          <span>{isSearching ? t('searching') : t('search')}</span>
+                          {isSearching ? t('loggingIn') : t('login')}
                         </button>
                       </div>
                       <p className="text-sm text-gray-500 mt-2">{t('sms.codeNote')}</p>
+                      {loginError && loginMethod === 'sms' && (
+                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-xl">
+                          <p className="text-sm text-red-600">{loginError}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -304,16 +593,16 @@ export default function ResultsPage() {
               {loginMethod === 'password' && (
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="emailOrPhone" className="block text-sm font-semibold text-gray-700 mb-2">
-                      {t('password.emailOrPhone')}
+                    <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
+                      {t('password.username')}
                     </label>
                     <input
                       type="text"
-                      id="emailOrPhone"
-                      value={emailOrPhone}
-                      onChange={(e) => setEmailOrPhone(e.target.value)}
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       required
-                      placeholder={t('password.emailOrPhonePlaceholder')}
+                      placeholder={t('password.usernamePlaceholder')}
                       className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white"
                     />
                   </div>
@@ -334,71 +623,20 @@ export default function ResultsPage() {
                       <button
                         type="submit"
                         disabled={isSearching}
-                        className="group bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3.5 rounded-xl font-bold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 rtl:space-x-reverse"
+                        className="group bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3.5 rounded-xl font-bold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <Search className="w-5 h-5" />
-                        <span>{isSearching ? t('searching') : t('search')}</span>
+                        {isSearching ? t('loggingIn') : t('login')}
                       </button>
                     </div>
                     <p className="text-sm text-gray-500 mt-2">{t('password.note')}</p>
+                    {loginError && loginMethod === 'password' && (
+                      <p className="text-sm text-red-500 mt-2">{loginError}</p>
+                    )}
                   </div>
                 </div>
               )}
             </form>
           </div>
-
-          {/* Results */}
-          {results === null ? (
-            <div className="bg-white p-12 rounded-3xl shadow-xl border border-gray-100 text-center">
-              <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg">{t('noResults')}</p>
-            </div>
-          ) : results.length === 0 ? (
-            <div className="bg-white p-12 rounded-3xl shadow-xl border border-gray-100 text-center">
-              <XCircle className="w-16 h-16 text-red-300 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg mb-2">{t('notFound')}</p>
-              <p className="text-sm text-gray-500">{t('notFoundNote')}</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {results.map((result) => (
-                <div
-                  key={result.id}
-                  className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="bg-primary-100 p-2 rounded-lg">
-                          <FileText className="w-5 h-5 text-primary-700" />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-900">{result.testName}</h3>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          <span>{result.date}</span>
-                        </div>
-                        <div className={`flex items-center gap-2 px-3 py-1 rounded-lg border ${getStatusColor(result.status)}`}>
-                          {getStatusIcon(result.status)}
-                          <span className="font-medium">{getStatusText(result.status)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    {result.status === 'completed' && result.downloadUrl && (
-                      <button
-                        onClick={() => window.open(result.downloadUrl, '_blank')}
-                        className="group bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 active:scale-95 flex items-center space-x-2 rtl:space-x-reverse"
-                      >
-                        <Download className="w-5 h-5" />
-                        <span>{t('download')}</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
 
           {/* Info Section */}
           <div className="mt-12 bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-3xl border border-primary-200">

@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { locales } from '@/i18n';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -27,9 +28,11 @@ export default async function LocaleLayout({
     <html lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'}>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <Navigation />
-          <main className="min-h-screen pt-16">{children}</main>
-          <Footer />
+          <AuthProvider>
+            <Navigation />
+            <main className="min-h-screen pt-16">{children}</main>
+            <Footer />
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

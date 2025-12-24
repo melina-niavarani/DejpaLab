@@ -4,13 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Menu, X, Search, Globe, ArrowRight } from 'lucide-react';
+import { Menu, X, Search, Globe, ArrowRight, LogOut } from 'lucide-react';
 import { usePathname } from '@/i18n/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Navigation() {
   const t = useTranslations('nav');
   const locale = useLocale();
   const pathname = usePathname();
+  const { isAuthenticated, user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,21 +55,86 @@ export default function Navigation() {
   }, [isSearchOpen]);
 
   return (
-    <header className="header fixed top-0 left-0 right-0 w-full z-50 backdrop-blur-xl bg-primary-600/80 border-b border-white/20 shadow-lg shadow-primary-900/10">
-      {/* White Background for Logo Section - Extends fully on non-rounded side */}
-      <div 
-        className="hidden xl:block absolute top-0 h-16 bg-white/95 backdrop-blur-sm"
-        style={{
-          borderRadius: isRTL ? '999px 0 0 0' : '0 999px 0 0',
-          [isRTL ? 'right' : 'left']: '0',
-          width: '200px',
-        }}
-      ></div>
-      
+    <>
+      <style dangerouslySetInnerHTML={{__html: `
+        @media (min-width: 1280px) {
+          .header-nav .logo-wrapper {
+            width: 200px !important;
+            max-width: 200px !important;
+            overflow: hidden !important;
+          }
+          .header-nav .logo-white-bg {
+            width: 200px !important;
+            max-width: 200px !important;
+          }
+          .header-nav .logo-container {
+            max-width: 200px !important;
+            overflow: hidden !important;
+          }
+        }
+        @media (min-width: 1536px) {
+          .header-nav .logo-wrapper {
+            width: 220px !important;
+            max-width: 220px !important;
+          }
+          .header-nav .logo-white-bg {
+            width: 220px !important;
+            max-width: 220px !important;
+          }
+        }
+        @media (min-width: 1760px) {
+          .header-nav .container {
+            max-width: 1760px;
+          }
+          .header-nav .logo-wrapper {
+            width: 240px !important;
+            max-width: 240px !important;
+          }
+          .header-nav .logo-white-bg {
+            width: 240px !important;
+            max-width: 240px !important;
+          }
+        }
+        @media (min-width: 1920px) {
+          .header-nav .container {
+            max-width: 1920px;
+          }
+          .header-nav .logo-wrapper {
+            width: 260px !important;
+            max-width: 260px !important;
+          }
+          .header-nav .logo-white-bg {
+            width: 260px !important;
+            max-width: 260px !important;
+          }
+        }
+      `}} />
+      <header className="header header-nav fixed top-0 left-0 right-0 w-full z-50 backdrop-blur-xl bg-primary-600/80 border-b border-white/20 shadow-lg shadow-primary-900/10 overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex items-center justify-between h-16 relative">
           {/* Left Section: Logo Box */}
           <div className="flex items-center justify-start relative">
+            {/* Wrapper for logo background with overflow control */}
+            <div 
+              className="hidden xl:block absolute top-0 h-16 overflow-hidden logo-wrapper" 
+              style={{ 
+                width: '200px', 
+                maxWidth: '200px',
+                [isRTL ? 'right' : 'left']: '-16px',
+                zIndex: 0,
+              }}
+            >
+              {/* White Background for Logo Section - Extends fully on non-rounded side */}
+              <div 
+                className="absolute top-0 h-16 bg-white/95 backdrop-blur-sm logo-white-bg"
+                style={{
+                  borderRadius: isRTL ? '999px 0 0 0' : '0 999px 0 0',
+                  [isRTL ? 'right' : 'left']: '-4px',
+                  width: '200px',
+                  maxWidth: '200px',
+                }}
+              ></div>
+            </div>
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -82,7 +149,7 @@ export default function Navigation() {
             </button>
 
             {/* Desktop Logo */}
-            <Link href="/" className="hidden xl:flex items-center relative z-10 h-16 px-8 group">
+            <Link href="/" className="hidden xl:flex items-center relative z-10 h-16 px-8 group overflow-hidden logo-container" style={{ maxWidth: '200px', position: 'relative' }}>
               <Image
                 src="/img/logo.png"
                 alt="DejpaLab Logo"
@@ -169,7 +236,33 @@ export default function Navigation() {
               <span>{locale === 'fa' ? 'EN' : 'FA'}</span>
             </button>
 
-            {/* Order Button (Desktop Only) */}
+            {/* Admin Login Button */}
+            {isAuthenticated && user?.role === 'admin' ? (
+              <>
+                <Link
+                  href="/admin"
+                  className="hidden xl:flex items-center px-5 py-2.5 bg-white text-primary-600 rounded-xl text-sm font-semibold hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-primary-900/10 hover:shadow-xl hover:shadow-primary-900/20"
+                >
+                  {t('adminPanel')}
+                </Link>
+                <button
+                  onClick={logout}
+                  className="hidden xl:flex items-center px-5 py-2.5 bg-gray-200 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-300 transition-all duration-200"
+                >
+                  <LogOut className="w-4 h-4 mr-2 rtl:mr-0 rtl:ml-2" />
+                  {t('logout')}
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden xl:flex items-center px-5 py-2.5 bg-white text-primary-600 rounded-xl text-sm font-semibold hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-primary-900/10 hover:shadow-xl hover:shadow-primary-900/20"
+              >
+                {t('adminLogin')}
+              </Link>
+            )}
+
+            {/* Contact Button (Desktop Only) */}
             <Link
               href="/contact"
               className="hidden xl:flex items-center px-5 py-2.5 bg-white text-primary-600 rounded-xl text-sm font-semibold hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-primary-900/10 hover:shadow-xl hover:shadow-primary-900/20"
@@ -203,6 +296,34 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
+            {isAuthenticated && user?.role === 'admin' ? (
+              <>
+                <Link
+                  href="/admin"
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-3.5 mt-2 mx-4 bg-white text-primary-600 rounded-xl text-base font-semibold text-center hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
+                >
+                  {t('adminPanel')}
+                </Link>
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsOpen(false);
+                  }}
+                  className="block w-full px-4 py-3.5 mt-2 mx-4 bg-gray-200 text-gray-700 rounded-xl text-base font-semibold text-center hover:bg-gray-300 transition-all duration-200"
+                >
+                  {t('logout')}
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3.5 mt-2 mx-4 bg-white text-primary-600 rounded-xl text-base font-semibold text-center hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
+              >
+                {t('adminLogin')}
+              </Link>
+            )}
             <Link
               href="/contact"
               onClick={() => setIsOpen(false)}
@@ -258,5 +379,6 @@ export default function Navigation() {
         </div>
       )}
     </header>
+    </>
   );
 }
