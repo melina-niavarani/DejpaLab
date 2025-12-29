@@ -56,3 +56,4 @@ feat: Complete B2B laboratory management system with admin and customer panels
 ## Breaking Changes
 - Removed `/dashboard` route (functionality merged into `/results`)
 
+

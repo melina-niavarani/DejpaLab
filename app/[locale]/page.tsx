@@ -78,7 +78,7 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/img/cover.jpg"
+            src="/img/cover.webp"
             alt="Hero Cover"
             fill
             className="object-cover scale-105 transition-transform duration-[20s] ease-out hover:scale-100"

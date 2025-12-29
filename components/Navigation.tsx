@@ -166,7 +166,7 @@ export default function Navigation() {
                   }}
                 >
                   <Image
-                    src="/img/logo.png"
+                    src="/img/logo.webp"
                     alt="DejpaLab Logo Shadow"
                     width={160}
                     height={53}
@@ -231,7 +231,7 @@ export default function Navigation() {
               <Link href="/" className="relative z-10 flex items-center justify-center h-full group">
                 <div className="relative">
                   <Image
-                    src="/img/logo.png"
+                    src="/img/logo.webp"
                     alt="DejpaLab Logo"
                     width={120}
                     height={40}

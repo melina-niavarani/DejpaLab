@@ -1,10 +1,34 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Target, Eye, Heart, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
+import { Target, Eye, Heart, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function AboutPage() {
   const t = useTranslations('about');
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const images = ['/img/2.webp', '/img/3.webp', '/img/4.webp', '/img/5.webp'];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % images.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
 
   const values = [
     {
@@ -25,24 +49,90 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="py-24 bg-gradient-to-b from-white via-gray-50/50 to-white min-h-screen">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-20">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
-            {t('title')}
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            {t('subtitle')}
-          </p>
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Slider Section */}
+      <section className="relative text-white h-[500px] md:h-[600px] overflow-hidden">
+        {/* Slides Container */}
+        <div className="relative w-full h-full">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              }`}
+            >
+              <Image
+                src={image}
+                alt={`Laboratory Image ${index + 1}`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                quality={90}
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary-600/85 via-primary-700/75 to-primary-800/85"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 via-transparent to-transparent"></div>
+            </div>
+          ))}
         </div>
 
-        {/* Description */}
-        <div className="max-w-4xl mx-auto mb-20">
-          <p className="text-lg md:text-xl text-gray-700 leading-relaxed text-center">
-            {t('description')}
-          </p>
+        {/* Content Overlay */}
+        <div className="absolute inset-0 z-20 flex items-center justify-center">
+          <div className="text-center px-4 animate-fade-in-up">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-balance leading-tight tracking-tight">
+              {t('title')}
+            </h1>
+            <p className="text-xl md:text-2xl text-white/95 font-medium leading-relaxed max-w-3xl">
+              {t('subtitle')}
+            </p>
+          </div>
         </div>
+
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+
+        {/* Dots Indicator */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide
+                  ? 'bg-white w-8'
+                  : 'bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Decorative Bottom Gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent z-[3] pointer-events-none"></div>
+      </section>
+
+      {/* Main Content */}
+      <div className="py-24 bg-gradient-to-b from-gray-50 via-white to-white">
+        <div className="container mx-auto px-4">
+          {/* Description */}
+          <div className="max-w-4xl mx-auto mb-20">
+            <p className="text-lg md:text-xl text-gray-700 leading-relaxed text-center">
+              {t('description')}
+            </p>
+          </div>
 
         {/* Mission & Vision */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
@@ -99,24 +189,25 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-12 md:p-16 shadow-xl border border-gray-100">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
-            <div className="group">
-              <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary-600 to-primary-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">10+</div>
-              <div className="text-gray-600 text-lg font-medium">{t('stats.years')}</div>
-            </div>
-            <div className="group">
-              <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary-600 to-primary-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">500+</div>
-              <div className="text-gray-600 text-lg font-medium">{t('stats.clients')}</div>
-            </div>
-            <div className="group">
-              <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary-600 to-primary-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">1000+</div>
-              <div className="text-gray-600 text-lg font-medium">{t('stats.tests')}</div>
-            </div>
-            <div className="group">
-              <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary-600 to-primary-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">50+</div>
-              <div className="text-gray-600 text-lg font-medium">{t('stats.testTypes')}</div>
+          {/* Stats Section */}
+          <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-12 md:p-16 shadow-xl border border-gray-100">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
+              <div className="group">
+                <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary-600 to-primary-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">10+</div>
+                <div className="text-gray-600 text-lg font-medium">{t('stats.years')}</div>
+              </div>
+              <div className="group">
+                <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary-600 to-primary-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">500+</div>
+                <div className="text-gray-600 text-lg font-medium">{t('stats.clients')}</div>
+              </div>
+              <div className="group">
+                <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary-600 to-primary-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">1000+</div>
+                <div className="text-gray-600 text-lg font-medium">{t('stats.tests')}</div>
+              </div>
+              <div className="group">
+                <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary-600 to-primary-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">50+</div>
+                <div className="text-gray-600 text-lg font-medium">{t('stats.testTypes')}</div>
+              </div>
             </div>
           </div>
         </div>
