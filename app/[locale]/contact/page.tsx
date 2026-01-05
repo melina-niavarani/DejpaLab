@@ -146,7 +146,7 @@ export default function ContactPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-bold text-gray-900 mb-2 text-lg">{t('emailLabel')}</h3>
-                    <a href="mailto:info@dejpalab.com" className="text-gray-600 hover:text-primary-600 transition-colors">info@dejpalab.com</a>
+                    <a href="mailto:laboratory@dejpa.com" className="text-gray-600 hover:text-primary-600 transition-colors">laboratory@dejpa.com</a>
                   </div>
                 </div>
               </div>

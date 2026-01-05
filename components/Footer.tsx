@@ -79,7 +79,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-3 rtl:space-x-reverse group">
                 <Mail className="w-5 h-5 text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <a href="mailto:info@dejpalab.com" className="hover:text-white transition-colors">info@dejpalab.com</a>
+                <a href="mailto:laboratory@dejpa.com" className="hover:text-white transition-colors">laboratory@dejpa.com</a>
               </li>
             </ul>
           </div>
