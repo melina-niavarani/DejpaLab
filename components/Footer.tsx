@@ -24,7 +24,7 @@ export default function Footer() {
           <div className="space-y-4">
             <Link href="/" className="inline-block group">
               <Image
-                src="/img/logo.webp"
+                src="/img/logo.png"
                 alt="DejpaLab Logo"
                 width={140}
                 height={46}

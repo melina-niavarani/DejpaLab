@@ -3,8 +3,9 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { FlaskConical, Microscope, TestTube, Shield, Award, Users, FileText, Search, ArrowRight } from 'lucide-react';
+import { FlaskConical, Microscope, TestTube, Shield, Award, Users, FileText, Search, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { useParams } from 'next/navigation';
 
 export default function HomePage() {
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
@@ -37,6 +38,10 @@ export default function HomePage() {
   const tServices = useTranslations('services');
   const tRequest = useTranslations('requestTest');
   const tResults = useTranslations('results');
+
+  const params = useParams();
+  const locale = params?.locale ?? '';
+  const ArrowIcon = locale === 'fa' ? ArrowLeft : ArrowRight;
 
   const services = [
     {
@@ -117,7 +122,7 @@ export default function HomePage() {
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   {t('cta')}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
+                  <ArrowIcon className="w-5 h-5 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
                 </span>
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
               </Link>
@@ -276,7 +281,7 @@ export default function HomePage() {
                 </p>
                 <div className="flex items-center text-white font-semibold group-hover:translate-x-2 rtl:group-hover:-translate-x-2 transition-transform duration-300">
                   <span>{t('requestSection.requestButton')}</span>
-                  <ArrowRight className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2 rtl:rotate-180 group-hover:scale-110 transition-transform" />
+                  <ArrowIcon className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2 rtl:rotate-180 group-hover:scale-110 transition-transform" />
                 </div>
               </div>
               
@@ -304,7 +309,7 @@ export default function HomePage() {
                 </p>
                 <div className="flex items-center text-white font-semibold group-hover:translate-x-2 rtl:group-hover:-translate-x-2 transition-transform duration-300">
                   <span>{t('requestSection.resultsButton')}</span>
-                  <ArrowRight className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2 rtl:rotate-180 group-hover:scale-110 transition-transform" />
+                  <ArrowIcon className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2 rtl:rotate-180 group-hover:scale-110 transition-transform" />
                 </div>
               </div>
               
