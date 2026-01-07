@@ -14,7 +14,7 @@
   "home": {
     "title": "Dejpa Laboratory",
     "subtitle": "Reliable and Professional Laboratory Services",
-    "description": "Dejpa Laboratory provides high-quality laboratory services in the industry with advanced equipment and expert team.",
+    "description": "Dejpa Laboratory, as a specialized laboratory for various types of bitumen and petroleum materials, with advanced equipment and experienced technical staff, provides testing and quality control services for various types of bitumen and petroleum materials in accordance with national and international standards. This laboratory holds a valid ISO/IEC 17025 certification and operates as a partner laboratory with the Standards Administration. Accuracy in testing, reliability of results, and commitment to quality are fundamental principles of Dejpa Laboratory in providing services to road construction industries and civil engineering projects.",
     "cta": "View Services",
     "learnMore": "Learn More",
     "requestSection": {
@@ -28,36 +28,36 @@
     "title": "Laboratory Services",
     "subtitle": "Our Specialized Services",
     "service1": {
-      "title": "Chemical Testing",
-      "description": "Accurate and reliable chemical testing for various industries"
+      "title": "Bitumen and Petroleum Materials Testing",
+      "description": "Conducting specialized tests and quality control of various types of bitumen and petroleum materials in accordance with national and international standards"
     },
     "service2": {
-      "title": "Physical Testing",
-      "description": "Evaluation of physical properties of materials and products"
+      "title": "Physical Properties Evaluation",
+      "description": "Determination of physical properties of bitumen including penetration, softening point, viscosity, and other physical characteristics"
     },
     "service3": {
-      "title": "Microbiology Testing",
-      "description": "Microbial analysis and testing of products and materials"
+      "title": "Rheological Testing",
+      "description": "Investigation of rheological properties of bitumen using advanced DSR and BBR equipment"
     },
     "service4": {
-      "title": "Environmental Testing",
-      "description": "Assessment and monitoring of environmental factors"
+      "title": "Quality Control",
+      "description": "Evaluation and quality control of bitumen and petroleum materials using calibrated equipment under quality management system supervision"
     },
     "service5": {
       "title": "Expert Consultation",
-      "description": "Professional consultation in laboratory services"
+      "description": "Providing specialized consultation on selection and use of various types of bitumen for road construction and civil engineering projects"
     },
     "service6": {
       "title": "Certification & Standards",
-      "description": "Issuance of valid international certifications"
+      "description": "Issuance of valid ISO/IEC 17025 certifications and reliable reports for domestic and international projects"
     },
     "features": {
-      "service1": ["Accurate Testing", "Comprehensive Reports", "International Standards"],
-      "service2": ["Property Evaluation", "Resistance Testing", "Structural Analysis"],
-      "service3": ["Microbial Testing", "Sterility Tests", "Pathogen Analysis"],
-      "service4": ["Environmental Monitoring", "Contamination Testing", "Safety Assessment"],
-      "service5": ["Expert Consultation", "Standards Guidance", "Technical Support"],
-      "service6": ["ISO Certification", "Valid Certificates", "International Approvals"]
+      "service1": ["Accurate Testing", "INSO and ASTM Standards", "Comprehensive Reports"],
+      "service2": ["Penetration and Softening Point", "Viscosity Measurement", "Mechanical Properties Evaluation"],
+      "service3": ["DSR Testing", "BBR Testing", "Rheological Behavior Investigation"],
+      "service4": ["Calibrated Equipment", "Quality Management System", "Accuracy and Reliability of Results"],
+      "service5": ["Bitumen Selection Consultation", "Standards Guidance", "Project Technical Support"],
+      "service6": ["ISO/IEC 17025 Certification", "Bilingual Reports", "Valid Approvals"]
     },
     "cta": {
       "title": "Ready to Serve",
@@ -66,28 +66,46 @@
     },
     "bitumen": {
       "title": "Bitumen Laboratory Services",
-      "description": "Bitumen has various types based on usage location and manufacturing method. Their heat resistance, viscosity, and insulation properties under different conditions are determined according to the latest standards of the International Organization for Standardization (ISO) based on standards 12505-1 to 12505-10. At Dejpa Laboratory, we are ready to evaluate your bitumen samples using the most advanced equipment according to their type.",
+      "description": "Dejpa Laboratory provides specialized testing and quality control services for various types of bitumen in accordance with Iranian national standards from INSO 12505-1 to INSO 12505-12, as well as valid international standards. All tests are conducted using calibrated equipment, valid testing methods, and under the supervision of the laboratory's quality management system.\n\nBitumen tests at this laboratory are conducted based on Iranian national standards developed by the Institute of Standards and Industrial Research of Iran and in compliance with ASTM and EN standard requirements. The selection of testing methods is based on the type of bitumen, sample specifications, project requirements, and client requests.\n\nTest result reports at Dejpa Laboratory are prepared with full compliance with technical requirements and standard reporting structure, and have the capability to provide results in both Persian and English. These reports are technically fully reliable for executive organizations, consultants, contractors, and domestic and international projects, and accuracy, transparency, and full compliance with reference standards are among the main features of this laboratory's services.",
       "testing": {
         "title": "Bitumen Testing",
         "description": "Evaluation of bitumen samples using the most advanced equipment and based on ISO standards",
         "features": [
-          "Heat resistance testing",
-          "Viscosity measurement",
-          "Insulation property evaluation",
-          "Testing based on ISO standards 12505-1 to 12505-10",
-          "Accurate and comprehensive reporting"
-        ]
-      },
-      "training": {
-        "title": "Training Courses",
-        "description": "At Dejpa, we consider education and knowledge development in this field as our mission. We believe that by increasing the knowledge level of professionals in this field, we have created special courses for training students and those interested in this field.",
-        "courses": [
-          "Training on penetration grade bitumen classification",
-          "Training on performance grade bitumen classification",
-          "Training on viscosity grade bitumen classification",
-          "Training on cutback bitumen",
-          "Training on emulsified bitumen",
-          "Training on modified bitumen"
+          "Determination of flash and fire points with Cleveland open cup apparatus",
+          "Determination of softening point of bitumen with ring and ball apparatus",
+          "Determination of penetration",
+          "Bituminous materials spot test",
+          "Determination of ductility",
+          "Effect of heat and air on bituminous materials (TFOT)",
+          "Determination of kinematic viscosity of bitumens",
+          "Determination of viscosity of bitumens using vacuum capillary viscometer",
+          "Effect of heat and air on a moving film of bitumen (RTFOT - Rolling Thin Film Oven Test)",
+          "Distillation of cutback bitumens",
+          "Determination of bitumen viscosity using Brookfield rotating viscometer",
+          "Determination of flexural creep stiffness of bitumen with Bending Beam Rheometer (BBR)",
+          "Determination of rheological properties of bitumen with Dynamic Shear Rheometer (DSR)",
+          "Accelerated aging of bitumen by Pressure Aging Vessel (PAV)",
+          "Determination of penetration and recovery (elastic recovery)",
+          "Determination of solubility of bituminous materials in trichloroethylene",
+          "Determination of flash point of cutback bitumens using Tag open cup apparatus",
+          "Determination of water content",
+          "Flash point measurement with Pensky-Martens closed cup apparatus",
+          "100% penetration residue",
+          "Determination of density of semi-solid bituminous materials (pycnometer method)",
+          "Determination of Fraass breaking point of bitumen and bituminous materials",
+          "Determination of bitumen emulsion viscosity with Saybolt-Furol viscometer",
+          "Sedimentation and storage stability of bituminous emulsions",
+          "Determination of breaking of bituminous emulsions",
+          "Coating ability of aggregates and water resistance",
+          "Mixing of bitumen emulsion with cement",
+          "Determination of oversize particles in bituminous emulsions (sieve test)",
+          "Distillation of bitumen emulsion",
+          "Determination of particle charge",
+          "Determination of density of solid and semi-solid bituminous materials (nickel crucible method)",
+          "Determination of ash content",
+          "Pour point measurement",
+          "Measurement of carbon residue and petroleum products by Conradson method",
+          "Distillation under reduced pressure"
         ]
       },
       "cta": "We are ready to evaluate your bitumen samples",
@@ -97,11 +115,11 @@
   "about": {
     "title": "About Dejpa Laboratory",
     "subtitle": "Trust and Quality in Every Test",
-    "description": "With years of experience in providing laboratory services, Dejpa Laboratory is one of the most reputable laboratories in the country. We provide quality services to domestic and international clients using advanced equipment and expert team.",
+    "description": "Dejpa Laboratory, as a specialized bitumen laboratory, with years of professional experience in conducting tests and quality control of various types of bitumen, provides its services based on technical knowledge, advanced equipment, and specialized human resources. This laboratory, with its extensive physical space and appropriate laboratory infrastructure, has enabled the installation of diverse equipment and simultaneous testing, thereby facilitating rapid and accurate response to the needs of large civil engineering projects.\n\nAll tests at Dejpa Laboratory are conducted in accordance with national and international standards and with full compliance with technical requirements. This facility holds a valid ISO/IEC 17025 certification and operates as a partner laboratory with the Standards Administration. Furthermore, Dejpa Laboratory has been selected as a Grade 1 partner laboratory for consecutive years, which demonstrates the high level of technical capability, quality performance, and reliability of the test results issued.\n\nAccuracy in testing, reliability and credibility of results, commitment to quality, and compliance with legal requirements are fundamental principles of this laboratory. Dejpa Laboratory, relying on its technical and physical capacities, has always served as a reliable reference for executive organizations, consultants, and contractors in road construction and civil engineering projects.",
     "mission": "Our Mission",
-    "missionText": "Providing laboratory services with the highest standards of quality and accuracy",
+    "missionText": "Providing specialized testing and quality control services for various types of bitumen and petroleum materials using advanced equipment and experienced technical staff, in accordance with national and international standards with accuracy, reliability of results, and commitment to quality",
     "vision": "Our Vision",
-    "visionText": "Becoming one of the leading laboratories in the region",
+    "visionText": "Becoming a reliable and leading reference for executive organizations, consultants, and contractors in road construction and civil engineering projects",
     "values": "Our Values",
     "value1": "Accuracy & Quality",
     "value2": "Trust & Transparency",
