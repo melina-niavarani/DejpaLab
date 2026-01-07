@@ -248,6 +248,25 @@ a, button {
   background: theme('colors.primary.600');
 }
 
+/* Thin Scrollbar with Low Opacity */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(31, 42, 88, 0.3);
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(31, 42, 88, 0.5);
+}
+
 /* Selection Styles */
 ::selection {
   background-color: theme('colors.primary.500');
