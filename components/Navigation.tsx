@@ -54,29 +54,6 @@ export default function Navigation() {
     }
   }, [isSearchOpen]);
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (isOpen && !target.closest('.mobile-menu-container') && !target.closest('button[aria-label="Menu"]')) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      // Prevent body scroll when menu is open
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
   return (
     <>
       <style dangerouslySetInnerHTML={{__html: `
@@ -119,7 +96,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16 relative">
           {/* Left Section: Logo Box */}
           <div className="flex items-center justify-start relative">
-            {/* Subtle shadow/glow effect for logo visibility */}
+            {/* Logo Glow Effect (Desktop Only) */}
             <div 
               className="hidden xl:block absolute top-0 h-16 logo-wrapper pointer-events-none" 
               style={{ 
@@ -129,7 +106,6 @@ export default function Navigation() {
                 zIndex: 0,
               }}
             >
-              {/* Subtle glow background for logo */}
               <div 
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full logo-glow"
                 style={{
@@ -157,23 +133,25 @@ export default function Navigation() {
             {/* Desktop Logo */}
             <Link href="/" className="hidden xl:flex items-center relative z-10 h-16 px-8 group logo-container" style={{ maxWidth: '200px', position: 'relative' }}>
               <div className="relative">
-                {/* Subtle drop shadow for logo visibility */}
+                {/* Shadow Image */}
                 <div 
-                  className="absolute inset-0"
+                  className="absolute inset-0" 
                   style={{
                     filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.2))',
                     zIndex: -1,
                   }}
                 >
                   <Image
-                    src="/img/logo.webp"
+                    src="/img/logo.png"
                     alt="DejpaLab Logo Shadow"
                     width={160}
                     height={53}
                     className="h-12 w-auto object-contain opacity-0"
                     aria-hidden="true"
+                    loading="lazy"
                   />
                 </div>
+                {/* Main Logo */}
                 <Image
                   src="/img/logo.png"
                   alt="DejpaLab Logo"
@@ -231,7 +209,7 @@ export default function Navigation() {
               <Link href="/" className="relative z-10 flex items-center justify-center h-full group">
                 <div className="relative">
                   <Image
-                    src="/img/logo.webp"
+                    src="/img/logo.png"
                     alt="DejpaLab Logo"
                     width={120}
                     height={40}
@@ -301,11 +279,9 @@ export default function Navigation() {
         {/* Mobile Menu Dropdown */}
         <div
           className={`xl:hidden mobile-menu-container overflow-hidden transition-all duration-300 ease-out ${
-            isOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+            isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}
-          style={{
-            zIndex: 40,
-          }}
+          style={{ zIndex: 40 }}
         >
           <div className="pb-4 bg-primary-600/95 backdrop-blur-xl border-t border-white/20 overflow-y-auto max-h-[calc(100vh-4rem)]">
             {navItems.map((item, index) => (
