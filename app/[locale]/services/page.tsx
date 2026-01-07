@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { FlaskConical, TestTube, Microscope, Shield, Users, Award, GraduationCap, FileCheck } from 'lucide-react';
+import { FlaskConical, TestTube, Microscope, Shield, Users, Award, FileCheck } from 'lucide-react';
 
 export default function ServicesPage() {
   const t = useTranslations('services');
@@ -103,55 +103,46 @@ export default function ServicesPage() {
               <div className="bg-gradient-to-br from-primary-600 to-primary-700 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary-500/30">
                 <FileCheck className="w-12 h-12 text-white" />
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h2 className="text-4xl  md:text-5xl font-bold text-gray-900 mb-6 py-2">
                 {t('bitumen.title')}
               </h2>
-              <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-8">
+              <p className="text-xl text-center text-gray-700 mx-auto leading-relaxed mb-8 px-4 md:px-0">
                 {t('bitumen.description')}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="grid grid-cols-1 gap-6 mb-12">
               {/* Testing Services */}
-              <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-                <div className="bg-primary-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                  <TestTube className="w-8 h-8 text-primary-700" />
+              <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 hover:-translate-y-2 relative overflow-hidden">
+                {/* Gradient Background on Hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-50/0 to-secondary-50/0 group-hover:from-primary-50/50 group-hover:to-secondary-50/30 transition-all duration-300"></div>
+                
+                <div className="relative z-10">
+                  <div className="bg-gradient-to-br from-primary-100 to-primary-200 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-primary-200/50">
+                    <TestTube className="w-10 h-10 text-primary-700 group-hover:text-primary-800 transition-colors" />
+                  </div>
+                  <h3 className="text-2xl  font-bold text-gray-900 mb-4 group-hover:text-primary-700 transition-colors">
+                    {t('bitumen.testing.title')}
+                  </h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {t('bitumen.testing.description')}
+                  </p>
+                  <div className="md:block">
+                    <div className="custom-scrollbar max-h-[60vh] md:max-h-none overflow-y-auto md:overflow-y-visible pr-3 rtl:pr-3 rtl:pl-0 md:pr-0 md:rtl:pr-0" style={{ direction: 'ltr' }}>
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-3" style={{ direction: 'rtl' }}>
+                        {t.raw('bitumen.testing.features') as string[] && (t.raw('bitumen.testing.features') as string[]).map((feature: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 group-hover:text-gray-700 transition-colors py-2 md:py-0 px-1 md:px-0">
+                            <span className="w-2 h-2 bg-primary-600 rounded-full mt-2 ml-2 rtl:ml-0 rtl:mr-2 md:ml-3 md:rtl:ml-0 md:rtl:mr-3 flex-shrink-0 group-hover:bg-primary-700 transition-colors"></span>
+                            <span className="leading-relaxed flex-1">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  {t('bitumen.testing.title')}
-                </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {t('bitumen.testing.description')}
-                </p>
-                <ul className="space-y-3">
-                  {t.raw('bitumen.testing.features') as string[] && (t.raw('bitumen.testing.features') as string[]).map((feature: string, idx: number) => (
-                    <li key={idx} className="flex items-start text-gray-700">
-                      <span className="w-2 h-2 bg-primary-600 rounded-full mt-2 ml-3 rtl:ml-0 rtl:mr-3 flex-shrink-0"></span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Training Services */}
-              <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-                <div className="bg-secondary-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                  <GraduationCap className="w-8 h-8 text-secondary-700" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  {t('bitumen.training.title')}
-                </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {t('bitumen.training.description')}
-                </p>
-                <ul className="space-y-3">
-                  {t.raw('bitumen.training.courses') as string[] && (t.raw('bitumen.training.courses') as string[]).map((course: string, idx: number) => (
-                    <li key={idx} className="flex items-start text-gray-700">
-                      <span className="w-2 h-2 bg-secondary-600 rounded-full mt-2 ml-3 rtl:ml-0 rtl:mr-3 flex-shrink-0"></span>
-                      <span>{course}</span>
-                    </li>
-                  ))}
-                </ul>
+                
+                {/* Decorative Corner */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-500/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             </div>
 
@@ -160,7 +151,7 @@ export default function ServicesPage() {
                 {t('bitumen.cta')}
               </p>
               <Link
-                href="/contact"
+                href="/request-test"
                 className="inline-block bg-white text-primary-600 px-8 py-3 rounded-xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
               >
                 {t('bitumen.ctaButton')}
