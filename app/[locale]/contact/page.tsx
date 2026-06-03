@@ -137,7 +137,7 @@ export default function ContactPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-bold text-gray-900 mb-2 text-lg">{t('phoneLabel')}</h3>
-                    <a href="tel:+982112345678" className="text-gray-600 hover:text-primary-600 transition-colors">+98 21 1234 5678</a>
+                    <a href="tel:+98241170000" className="text-gray-600 hover:text-primary-600 transition-colors">021-41170000</a>
                   </div>
                 </div>
                 <div className="flex items-start space-x-4 rtl:space-x-reverse group">

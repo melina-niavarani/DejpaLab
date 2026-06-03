@@ -1,15 +1,18 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { FlaskConical, Microscope, TestTube, Shield, Award, Users, FileText, Search, ArrowRight } from 'lucide-react';
+import { FlaskConical, Microscope, TestTube, Shield, Award, Users, FileText, Search, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export default function HomePage() {
   const t = useTranslations('home');
   const tServices = useTranslations('services');
   const tRequest = useTranslations('requestTest');
   const tResults = useTranslations('results');
+  const locale = useLocale();
+  const isRTL = locale === 'fa';
+  const Arrow = isRTL ? ArrowLeft : ArrowRight;
 
   const services = [
     {
@@ -214,7 +217,7 @@ export default function HomePage() {
               </p>
               <div className="flex items-center text-white font-semibold group-hover:translate-x-2 rtl:group-hover:-translate-x-2 transition-transform duration-300">
                 <span>{t('requestSection.requestButton')}</span>
-                <ArrowRight className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2" />
+                <Arrow className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2" />
               </div>
             </Link>
 
@@ -232,7 +235,7 @@ export default function HomePage() {
               </p>
               <div className="flex items-center text-white font-semibold group-hover:translate-x-2 rtl:group-hover:-translate-x-2 transition-transform duration-300">
                 <span>{t('requestSection.resultsButton')}</span>
-                <ArrowRight className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2" />
+                <Arrow className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2" />
               </div>
             </Link>
           </div>
