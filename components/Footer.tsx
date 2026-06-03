@@ -71,11 +71,11 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start space-x-3 rtl:space-x-reverse group">
                 <MapPin className="w-5 h-5 text-white mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="hover:text-white transition-colors">{tContact('addressText')}</span>
+                <a className="hover:text-white transition-colors" href="https://www.google.com/maps?q=35.401737,51.264336" target='_blank'>{tContact('addressText')}</a>
               </li>
               <li className="flex items-center space-x-3 rtl:space-x-reverse group">
                 <Phone className="w-5 h-5 text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <a href="tel:+982112345678" className="hover:text-white transition-colors">+98 21 1234 5678</a>
+                <a href="tel:+98241170000" className="hover:text-white transition-colors">021-41170000</a>
               </li>
               <li className="flex items-center space-x-3 rtl:space-x-reverse group">
                 <Mail className="w-5 h-5 text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
@@ -89,6 +89,17 @@ export default function Footer() {
           <p className="text-gray-300 text-sm">
             © {new Date().getFullYear()} DejpaLab. {t('rights')}
           </p>
+             <p className="text-gray-500 text-xs mt-1">
+                Design & Development by{" "}
+                <a 
+                    href="https://www.melinaniavarani.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-primary-400 transition-colors duration-300 hover-cursor-glow"
+                >
+                    Melina Niavarani
+                </a>
+              </p>
         </div>
       </div>
     </footer>
