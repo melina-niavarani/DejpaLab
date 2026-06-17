@@ -114,26 +114,52 @@
   },
   "about": {
     "title": "About Dejpa Laboratory",
-    "subtitle": "Trust and Quality in Every Test",
-    "description": "Dejpa Laboratory, as a specialized bitumen laboratory, with years of professional experience in conducting tests and quality control of various types of bitumen, provides its services based on technical knowledge, advanced equipment, and specialized human resources. This laboratory, with its extensive physical space and appropriate laboratory infrastructure, has enabled the installation of diverse equipment and simultaneous testing, thereby facilitating rapid and accurate response to the needs of large civil engineering projects.\n\nAll tests at Dejpa Laboratory are conducted in accordance with national and international standards and with full compliance with technical requirements. This facility holds a valid ISO/IEC 17025 certification and operates as a partner laboratory with the Standards Administration. Furthermore, Dejpa Laboratory has been selected as a Grade 1 partner laboratory for consecutive years, which demonstrates the high level of technical capability, quality performance, and reliability of the test results issued.\n\nAccuracy in testing, reliability and credibility of results, commitment to quality, and compliance with legal requirements are fundamental principles of this laboratory. Dejpa Laboratory, relying on its technical and physical capacities, has always served as a reliable reference for executive organizations, consultants, and contractors in road construction and civil engineering projects.",
+    "subtitle": "Continuous Quality Control from Production to Delivery",
+    "description": "The quality of products manufactured by Dejpa Oil and Bitumen Refinery Company is continuously monitored and controlled from production to customer delivery in accordance with national and international standards and through precise quality control methods.\n\nDejpa Oil and Bitumen Refinery Laboratory, equipped with modern and up-to-date instruments, is recognized as a reliable reference for quality testing of various types of bitumen, soil-covering materials, and hydrocarbons. Based on certifications obtained from the National Standards Organization, the laboratory continues to operate as a trusted partner laboratory of this organization.\n\nThis laboratory unit holds ISO/IEC 17025 certification issued by the National Accreditation Center of Iran, reflecting its compliance with technical, managerial, and quality requirements in testing procedures and the issuance of reliable test results.\n\nAfter years of continuous effort in research and development, Dejpa has successfully established two production and processing lines and developed ten different types of soil-covering materials on a large scale. Accordingly, the company has invested significantly in equipping its laboratories with modern technical equipment for the development and production of environmentally friendly soil-covering materials.\n\nIn addition, simulated desert test fields have been established at the company’s refinery site to evaluate the environmental effects and performance of soil-covering applications under conditions close to real field environments.",
     "mission": "Our Mission",
-    "missionText": "Providing specialized testing and quality control services for various types of bitumen and petroleum materials using advanced equipment and experienced technical staff, in accordance with national and international standards with accuracy, reliability of results, and commitment to quality",
+    "missionText": "Providing specialized testing and quality control services for various types of bitumen, soil-covering materials, and hydrocarbons using modern equipment, precise laboratory methods, and experienced technical staff in accordance with national and international standards.",
     "vision": "Our Vision",
-    "visionText": "Becoming a reliable and leading reference for executive organizations, consultants, and contractors in road construction and civil engineering projects",
+    "visionText": "Strengthening Dejpa Laboratory’s position as a reliable and recognized reference for quality control of bitumen, soil-covering materials, hydrocarbons, and related products in industrial, civil engineering, and environmental projects.",
     "values": "Our Values",
     "value1": "Accuracy & Quality",
-    "value2": "Trust & Transparency",
-    "value3": "Innovation & Progress",
+    "value2": "Trust & Standards Compliance",
+    "value3": "Research, Development & Innovation",
     "valueDescriptions": {
-      "value1": "Commitment to the highest quality standards in all tests",
-      "value2": "Complete transparency in reporting and customer relations",
-      "value3": "Using the latest technologies and laboratory methods"
+      "value1": "Continuous quality control of products from production to customer delivery through precise laboratory methods.",
+      "value2": "Operating as a trusted partner laboratory of the National Standards Organization while complying with ISO/IEC 17025 requirements.",
+      "value3": "Developing production lines, upgrading laboratory capabilities, and evaluating products in simulated desert test fields."
     },
-    "stats": {
-      "years": "Years of Experience",
-      "clients": "Satisfied Clients",
-      "tests": "Tests Completed",
-      "testTypes": "Test Types"
+    "standardUnitAwards": {
+      "eyebrow": "Awards & Recognitions",
+      "title": "Recognized as an Exemplary Standard Unit",
+      "subtitle": "Dejpa Oil and Bitumen Refinery Company has been recognized as an Exemplary Standard Unit in multiple years, reflecting its continuous commitment to quality control, standards compliance, and reliable laboratory and production performance.",
+      "items": {
+        "y1397": {
+          "year": "1397 SH",
+          "title": "Exemplary Standard Unit - 1397",
+          "description": "Recognition of Dejpa as an Exemplary Standard Unit in 1397."
+        },
+        "y1399": {
+          "year": "1399 SH",
+          "title": "Exemplary Standard Unit - 1399",
+          "description": "Recognition as an Exemplary Standard Unit in 1399 based on quality performance and standards compliance."
+        },
+        "y1400": {
+          "year": "1400 SH",
+          "title": "Exemplary Standard Unit - 1400",
+          "description": "Dejpa was once again recognized as an Exemplary Standard Unit in 1400."
+        },
+        "y1401": {
+          "year": "1401 SH",
+          "title": "Exemplary Standard Unit - 1401",
+          "description": "Continuation of Dejpa’s recognition as an Exemplary Standard Unit in 1401."
+        },
+        "y1403": {
+          "year": "1403 SH",
+          "title": "Exemplary Standard Unit - 1403",
+          "description": "Recognition of Dejpa as an Exemplary Standard Unit in 1403."
+        }
+      }
     }
   },
   "contact": {
@@ -182,12 +208,36 @@
     "passwordInfoNote": "Choose a password to view your test results. Please remember this password.",
     "existingUserNote": "You are already registered in the system. You can login to the results section with your existing username and password.",
     "testInfo": "Test Information",
-    "description": "Description",
-    "descriptionPlaceholder": "Please describe your test requirements in detail...",
+    "description": "Select Bitumen Category",
+    "descriptionPlaceholder": "Select the bitumen category for your test request",
     "attachFiles": "Attach Files (Optional)",
     "fileNote": "You can attach relevant documents, images, or specifications (Max 10MB)",
     "submit": "Submit Request",
     "submitting": "Submitting...",
+    "bitumenCategories": {
+      "performance": {
+        "title": "Performance Grade Bitumen",
+        "description": "Bitumen classified based on performance properties, including PG grades evaluated according to pavement temperature and service conditions."
+      },
+      "penetration": {
+        "title": "Penetration Grade Bitumen",
+        "description": "Bitumen classified based on penetration value, including common grades such as 40/60, 60/70, and 80/100."
+      },
+      "cutback": {
+        "title": "Cutback Bitumen",
+        "description": "Bitumen dissolved with suitable solvents, including RC, MC, and SC grades classified by curing speed and application method."
+      },
+      "viscosity": {
+        "title": "Viscosity Grade Bitumen",
+        "description": "Bitumen classified based on viscosity behavior, including VG-10, VG-20, VG-30, and VG-40 grades."
+      }
+    },
+    "labMarketingContact": {
+      "title": "Direct Contact with Laboratory Services Marketing Unit",
+      "description": "For faster coordination, you can contact the laboratory services marketing unit directly.",
+      "phoneDisplay": "021-XXXXXXX",
+      "phoneRaw": "021XXXXXXX"
+    },
     "validation": {
       "usernameRequired": "Username is required",
       "companyNameRequired": "Company name is required",
@@ -195,7 +245,7 @@
       "phoneInvalid": "Invalid phone number (format: 09123456789)",
       "emailRequired": "Email is required",
       "emailInvalid": "Invalid email address",
-      "descriptionRequired": "Description is required",
+      "descriptionRequired": "Please select the bitumen category for your test request.",
       "passwordRequired": "Password is required",
       "passwordMinLength": "Password must be at least 4 characters",
       "passwordMismatch": "Password and confirm password do not match",
@@ -204,7 +254,9 @@
     "success": {
       "title": "Request Submitted Successfully!",
       "message": "Your test request has been received. We will contact you within 24 hours.",
-      "note": "You will receive a tracking code via email to check your results."
+      "trackingCodeLabel": "Your Tracking Code",
+      "trackingCodeNote": "Please keep this code to track your request and view your results.",
+      "note": "You can use your tracking code to follow up on your test request."
     },
     "infoCard1": {
       "title": "Fast Processing",
