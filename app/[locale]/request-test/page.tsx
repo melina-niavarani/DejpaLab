@@ -4,12 +4,23 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
-import { FileText, Building2, User, Mail, Phone, CheckCircle, Upload, UserCircle, Calendar, Lock } from 'lucide-react';
+import {
+  FileText,
+  Building2,
+  Mail,
+  Phone,
+  CheckCircle,
+  Upload,
+  UserCircle,
+  Calendar,
+  Lock,
+} from 'lucide-react';
 
 export default function RequestTestPage() {
   const t = useTranslations('requestTest');
   const router = useRouter();
   const { addTestRequest, user, testRequests, addUser, users } = useAuth();
+
   const [formData, setFormData] = useState({
     username: user?.username || '',
     companyName: user?.companyName || '',
@@ -20,26 +31,51 @@ export default function RequestTestPage() {
     description: '',
     files: null as FileList | null,
   });
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
-  // Check if user already exists
+  const [trackingCode, setTrackingCode] = useState<string>('');
+
   const existingUser = users.find(u => u.username === formData.username.trim());
   const isNewUser = !existingUser && formData.username.trim().length >= 3;
 
-  // Auto-fill form when username changes
+  const bitumenCategoryOptions = [
+    {
+      value: 'performance-grade-bitumen',
+      title: t('bitumenCategories.performance.title'),
+      description: t('bitumenCategories.performance.description'),
+    },
+    {
+      value: 'penetration-grade-bitumen',
+      title: t('bitumenCategories.penetration.title'),
+      description: t('bitumenCategories.penetration.description'),
+    },
+    {
+      value: 'cutback-bitumen',
+      title: t('bitumenCategories.cutback.title'),
+      description: t('bitumenCategories.cutback.description'),
+    },
+    {
+      value: 'viscosity-grade-bitumen',
+      title: t('bitumenCategories.viscosity.title'),
+      description: t('bitumenCategories.viscosity.description'),
+    },
+  ];
+
+  const selectedBitumenCategory = bitumenCategoryOptions.find(
+    option => option.value === formData.description
+  );
+
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newUsername = e.target.value;
-    
-    // Find the first (oldest) request with this username
+
     if (newUsername && newUsername.length >= 3) {
       const firstRequest = testRequests
         .filter(req => req.username === newUsername)
         .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0];
 
       if (firstRequest) {
-        // Auto-fill fields from the first request
         setFormData(prev => ({
           ...prev,
           username: newUsername,
@@ -50,67 +86,67 @@ export default function RequestTestPage() {
         return;
       }
     }
-    
-    // If no matching request found, just update username
+
     setFormData(prev => ({ ...prev, username: newUsername }));
   };
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.username.trim()) {
       newErrors.username = t('validation.usernameRequired');
     }
+
     if (!formData.companyName.trim()) {
       newErrors.companyName = t('validation.companyNameRequired');
     }
+
     if (!formData.phone.trim()) {
       newErrors.phone = t('validation.phoneRequired');
     } else if (!/^09\d{9}$/.test(formData.phone.replace(/\s/g, ''))) {
       newErrors.phone = t('validation.phoneInvalid');
     }
+
     if (!formData.email.trim()) {
       newErrors.email = t('validation.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = t('validation.emailInvalid');
     }
+
     if (!formData.description.trim()) {
       newErrors.description = t('validation.descriptionRequired');
     }
-    
-    // Only require password if user is new
+
     if (isNewUser) {
       if (!formData.password.trim()) {
         newErrors.password = t('validation.passwordRequired');
       } else if (formData.password.length < 4) {
         newErrors.password = t('validation.passwordMinLength');
       }
+
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = t('validation.passwordMismatch');
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const [trackingCode, setTrackingCode] = useState<string>('');
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setIsSubmitting(true);
     setErrors({});
-    
+
     try {
-      // Check if user exists, if not create one
       const existingUser = users.find(u => u.username === formData.username.trim());
+
       if (!existingUser && formData.password.trim()) {
-        // Create new user with password
         addUser({
           username: formData.username.trim(),
           companyName: formData.companyName.trim(),
@@ -125,16 +161,20 @@ export default function RequestTestPage() {
           },
         });
       }
-      
+
       const code = addTestRequest({
         username: formData.username.trim(),
         companyName: formData.companyName.trim(),
         phone: formData.phone.trim(),
         email: formData.email.trim(),
-        description: formData.description.trim(),
+        description: selectedBitumenCategory
+          ? `${selectedBitumenCategory.title} - ${selectedBitumenCategory.description}`
+          : formData.description.trim(),
       });
+
       setTrackingCode(code);
       setIsSubmitted(true);
+
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
@@ -149,7 +189,7 @@ export default function RequestTestPage() {
         });
         setTrackingCode('');
         router.push('/results');
-      }, 5000); // Increased to 5 seconds to show tracking code
+      }, 5000);
     } catch (error) {
       console.error('Error submitting request:', error);
       setErrors({ submit: t('validation.submitError') });
@@ -161,7 +201,6 @@ export default function RequestTestPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    // Special handling for username field
     if (e.target.name === 'username') {
       handleUsernameChange(e as React.ChangeEvent<HTMLInputElement>);
     } else {
@@ -178,7 +217,6 @@ export default function RequestTestPage() {
       files: e.target.files,
     });
   };
-
 
   return (
     <div className="py-24 bg-gradient-to-b from-gray-50 to-white min-h-screen">
@@ -198,32 +236,49 @@ export default function RequestTestPage() {
               <div className="bg-gradient-to-br from-green-100 to-green-200 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-200/50">
                 <CheckCircle className="w-12 h-12 text-green-600" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('success.title')}</h2>
-              <p className="text-lg text-gray-600 mb-6">{t('success.message')}</p>
+
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                {t('success.title')}
+              </h2>
+
+              <p className="text-lg text-gray-600 mb-6">
+                {t('success.message')}
+              </p>
+
               {trackingCode && (
                 <div className="bg-primary-50 border-2 border-primary-200 rounded-xl p-6 mb-6">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">{t('success.trackingCodeLabel')}</p>
-                  <p className="text-3xl font-bold text-primary-600 mb-2 font-mono tracking-wider">{trackingCode}</p>
-                  <p className="text-xs text-gray-600">{t('success.trackingCodeNote')}</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                    {t('success.trackingCodeLabel')}
+                  </p>
+                  <p className="text-3xl font-bold text-primary-600 mb-2 font-mono tracking-wider">
+                    {trackingCode}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {t('success.trackingCodeNote')}
+                  </p>
                 </div>
               )}
-              <p className="text-sm text-gray-500">{t('success.note')}</p>
+
+              <p className="text-sm text-gray-500">
+                {t('success.note')}
+              </p>
             </div>
           ) : (
             <div className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Company Information */}
                 <div className="border-b border-gray-200 pb-6 mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                     <Building2 className="w-6 h-6 mr-3 rtl:mr-0 rtl:ml-3 text-primary-600" />
                     {t('companyInfo')}
                   </h2>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
                         <UserCircle className="w-4 h-4 inline mr-2 rtl:mr-0 rtl:ml-2" />
                         {t('username')} <span className="text-red-500">*</span>
                       </label>
+
                       <input
                         type="text"
                         id="username"
@@ -236,92 +291,103 @@ export default function RequestTestPage() {
                           errors.username ? 'border-red-500' : 'border-gray-200'
                         }`}
                       />
-                      {errors.username && (
+
+                      {errors.username ? (
                         <p className="text-xs text-red-500 mt-1">{errors.username}</p>
-                      )}
-                      {!errors.username && (
+                      ) : (
                         <p className="text-xs text-gray-500 mt-1">{t('usernameNote')}</p>
                       )}
                     </div>
+
                     <div>
                       <label htmlFor="companyName" className="block text-sm font-semibold text-gray-700 mb-2">
                         <Building2 className="w-4 h-4 inline mr-2 rtl:mr-0 rtl:ml-2" />
                         {t('companyName')} <span className="text-red-500">*</span>
                       </label>
-                        <input
-                          type="text"
-                          id="companyName"
-                          name="companyName"
-                          value={formData.companyName}
-                          onChange={handleChange}
-                          required
-                          className={`w-full px-5 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white ${
-                            errors.companyName ? 'border-red-500' : 'border-gray-200'
-                          }`}
-                        />
-                        {errors.companyName && (
-                          <p className="text-xs text-red-500 mt-1">{errors.companyName}</p>
-                        )}
+
+                      <input
+                        type="text"
+                        id="companyName"
+                        name="companyName"
+                        value={formData.companyName}
+                        onChange={handleChange}
+                        required
+                        className={`w-full px-5 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white ${
+                          errors.companyName ? 'border-red-500' : 'border-gray-200'
+                        }`}
+                      />
+
+                      {errors.companyName && (
+                        <p className="text-xs text-red-500 mt-1">{errors.companyName}</p>
+                      )}
                     </div>
+
                     <div>
                       <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
                         <Phone className="w-4 h-4 inline mr-2 rtl:mr-0 rtl:ml-2" />
                         {t('mobile')} <span className="text-red-500">*</span>
                       </label>
-                        <input
-                          type="tel"
-                          id="phone"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          required
-                          className={`w-full px-5 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white ${
-                            errors.phone ? 'border-red-500' : 'border-gray-200'
-                          }`}
-                        />
-                        {errors.phone && (
-                          <p className="text-xs text-red-500 mt-1">{errors.phone}</p>
-                        )}
+
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                        className={`w-full px-5 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white ${
+                          errors.phone ? 'border-red-500' : 'border-gray-200'
+                        }`}
+                      />
+
+                      {errors.phone && (
+                        <p className="text-xs text-red-500 mt-1">{errors.phone}</p>
+                      )}
                     </div>
+
                     <div>
                       <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                         <Mail className="w-4 h-4 inline mr-2 rtl:mr-0 rtl:ml-2" />
                         {t('email')} <span className="text-red-500">*</span>
                       </label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          required
-                          className={`w-full px-5 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white ${
-                            errors.email ? 'border-red-500' : 'border-gray-200'
-                          }`}
-                        />
-                        {errors.email && (
-                          <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-                        )}
+
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className={`w-full px-5 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white ${
+                          errors.email ? 'border-red-500' : 'border-gray-200'
+                        }`}
+                      />
+
+                      {errors.email && (
+                        <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* Password Section - Only show for new users */}
                 {isNewUser && (
                   <div className="border-b border-gray-200 pb-6 mb-6">
                     <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                       <Lock className="w-6 h-6 mr-3 rtl:mr-0 rtl:ml-3 text-primary-600" />
                       {t('passwordInfo')}
                     </h2>
+
                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
                       <p className="text-sm text-blue-700">{t('passwordInfoNote')}</p>
                     </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                           <Lock className="w-4 h-4 inline mr-2 rtl:mr-0 rtl:ml-2" />
                           {t('password')} <span className="text-red-500">*</span>
                         </label>
+
                         <input
                           type="password"
                           id="password"
@@ -334,18 +400,20 @@ export default function RequestTestPage() {
                             errors.password ? 'border-red-500' : 'border-gray-200'
                           }`}
                         />
-                        {errors.password && (
+
+                        {errors.password ? (
                           <p className="text-xs text-red-500 mt-1">{errors.password}</p>
-                        )}
-                        {!errors.password && (
+                        ) : (
                           <p className="text-xs text-gray-500 mt-1">{t('passwordNote')}</p>
                         )}
                       </div>
+
                       <div>
                         <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
                           <Lock className="w-4 h-4 inline mr-2 rtl:mr-0 rtl:ml-2" />
                           {t('confirmPassword')} <span className="text-red-500">*</span>
                         </label>
+
                         <input
                           type="password"
                           id="confirmPassword"
@@ -358,6 +426,7 @@ export default function RequestTestPage() {
                             errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
                           }`}
                         />
+
                         {errors.confirmPassword && (
                           <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>
                         )}
@@ -365,8 +434,7 @@ export default function RequestTestPage() {
                     </div>
                   </div>
                 )}
-                
-                {/* Show message for existing users */}
+
                 {existingUser && (
                   <div className="border-b border-gray-200 pb-6 mb-6">
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4">
@@ -378,38 +446,101 @@ export default function RequestTestPage() {
                   </div>
                 )}
 
-                {/* Test Description */}
                 <div className="border-b border-gray-200 pb-6 mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                     <FileText className="w-6 h-6 mr-3 rtl:mr-0 rtl:ml-3 text-primary-600" />
                     {t('testInfo')}
                   </h2>
+
+                  <div className="bg-primary-50 border border-primary-200 rounded-2xl p-5 mb-6">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div>
+                        <h3 className="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                          <Phone className="w-5 h-5 text-primary-600" />
+                          {t('labMarketingContact.title')}
+                        </h3>
+
+                        <p className="text-sm text-gray-600">
+                          {t('labMarketingContact.description')}
+                        </p>
+                      </div>
+
+                      <a
+                        href={`tel:${t('labMarketingContact.phoneRaw')}`}
+                        className="inline-flex items-center justify-center gap-2 bg-primary-600 text-white px-5 py-3 rounded-xl font-bold hover:bg-primary-700 transition-colors"
+                      >
+                        <Phone className="w-4 h-4" />
+                        {t('labMarketingContact.phoneDisplay')}
+                      </a>
+                    </div>
+                  </div>
+
                   <div className="space-y-6">
                     <div>
-                      <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">
                         {t('description')} <span className="text-red-500">*</span>
                       </label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                        rows={6}
-                        className={`w-full px-5 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white resize-none ${
-                          errors.description ? 'border-red-500' : 'border-gray-200'
-                        }`}
-                        placeholder={t('descriptionPlaceholder')}
-                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {bitumenCategoryOptions.map(option => (
+                          <label
+                            key={option.value}
+                            className={`cursor-pointer rounded-2xl border-2 p-5 transition-all duration-200 bg-gray-50 hover:bg-white hover:shadow-md ${
+                              formData.description === option.value
+                                ? 'border-primary-600 bg-primary-50 shadow-md'
+                                : errors.description
+                                  ? 'border-red-500'
+                                  : 'border-gray-200'
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="description"
+                              value={option.value}
+                              checked={formData.description === option.value}
+                              onChange={handleChange}
+                              required
+                              className="sr-only"
+                            />
+
+                            <div className="flex items-start gap-3">
+                              <div
+                                className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                                  formData.description === option.value
+                                    ? 'border-primary-600'
+                                    : 'border-gray-300'
+                                }`}
+                              >
+                                {formData.description === option.value && (
+                                  <div className="w-2.5 h-2.5 rounded-full bg-primary-600" />
+                                )}
+                              </div>
+
+                              <div>
+                                <h3 className="font-bold text-gray-900 mb-1">
+                                  {option.title}
+                                </h3>
+
+                                <p className="text-sm text-gray-600 leading-relaxed">
+                                  {option.description}
+                                </p>
+                              </div>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+
                       {errors.description && (
-                        <p className="text-xs text-red-500 mt-1">{errors.description}</p>
+                        <p className="text-xs text-red-500 mt-2">{errors.description}</p>
                       )}
                     </div>
+
                     <div>
                       <label htmlFor="files" className="block text-sm font-semibold text-gray-700 mb-2">
                         <Upload className="w-4 h-4 inline mr-2 rtl:mr-0 rtl:ml-2" />
                         {t('attachFiles')}
                       </label>
+
                       <input
                         type="file"
                         id="files"
@@ -418,6 +549,7 @@ export default function RequestTestPage() {
                         multiple
                         className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-100 file:text-primary-700 hover:file:bg-primary-200"
                       />
+
                       <p className="text-sm text-gray-500 mt-2">{t('fileNote')}</p>
                     </div>
                   </div>
@@ -428,6 +560,7 @@ export default function RequestTestPage() {
                     <p className="text-sm text-red-600">{errors.submit}</p>
                   </div>
                 )}
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -449,28 +582,47 @@ export default function RequestTestPage() {
             </div>
           )}
 
-          {/* Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
             <div className="bg-gradient-to-br from-primary-50 to-primary-100 p-6 rounded-2xl border border-primary-200">
               <div className="bg-primary-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
                 <FileText className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">{t('infoCard1.title')}</h3>
-              <p className="text-sm text-gray-600">{t('infoCard1.description')}</p>
+
+              <h3 className="font-bold text-gray-900 mb-2">
+                {t('infoCard1.title')}
+              </h3>
+
+              <p className="text-sm text-gray-600">
+                {t('infoCard1.description')}
+              </p>
             </div>
+
             <div className="bg-gradient-to-br from-secondary-50 to-secondary-100 p-6 rounded-2xl border border-secondary-200">
               <div className="bg-secondary-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
                 <Calendar className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">{t('infoCard2.title')}</h3>
-              <p className="text-sm text-gray-600">{t('infoCard2.description')}</p>
+
+              <h3 className="font-bold text-gray-900 mb-2">
+                {t('infoCard2.title')}
+              </h3>
+
+              <p className="text-sm text-gray-600">
+                {t('infoCard2.description')}
+              </p>
             </div>
+
             <div className="bg-gradient-to-br from-primary-50 to-primary-100 p-6 rounded-2xl border border-primary-200">
               <div className="bg-primary-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
                 <CheckCircle className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">{t('infoCard3.title')}</h3>
-              <p className="text-sm text-gray-600">{t('infoCard3.description')}</p>
+
+              <h3 className="font-bold text-gray-900 mb-2">
+                {t('infoCard3.title')}
+              </h3>
+
+              <p className="text-sm text-gray-600">
+                {t('infoCard3.description')}
+              </p>
             </div>
           </div>
         </div>
@@ -478,4 +630,3 @@ export default function RequestTestPage() {
     </div>
   );
 }
-
