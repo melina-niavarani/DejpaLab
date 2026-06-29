@@ -235,8 +235,8 @@
     "labMarketingContact": {
       "title": "Direct Contact with Laboratory Services Marketing Unit",
       "description": "For faster coordination, you can contact the laboratory services marketing unit directly.",
-      "phoneDisplay": "021-XXXXXXX",
-      "phoneRaw": "021XXXXXXX"
+      "phoneDisplay": "+989900669003",
+      "phoneRaw": "+989900669003"
     },
     "validation": {
       "usernameRequired": "Username is required",
